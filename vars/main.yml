@@ -1,0 +1,10 @@
+---
+# vars file for kibana
+kibana_user: "kibana"
+kibana_group: "kibana"
+kibana_service: "kibana"
+
+kibana_port: 5601
+kibana_host: "{{ ansible_host }}"
+
+kibana_log_dir: "/var/log/kibana"

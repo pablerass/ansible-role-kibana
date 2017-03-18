@@ -1,0 +1,41 @@
+---
+# tasks file for kibana
+- name: "Repository key url"
+  apt_key:
+    url: "{{ elasticsearch_apt_key_url }}"
+
+- name: "Repository"
+  apt_repository:
+    repo: "{{ elasticsearch_apt_repo }}"
+    filename: "elasticsearch"
+
+- name: "Packages"
+  apt:
+    name: "{{ item }}"
+    update_cache: "yes"
+    cache_valid_time: 3600
+  with_items:
+    - "kibana"
+
+- name: "Log directory"
+  file:
+    path: "{{ kibana_log_dir }}"
+    state: "directory"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+
+- name: "Kibana Configuration"
+  template:
+    src: "etc.kibana.yml.j2"
+    dest: "/etc/kibana/kibana.yml"
+    backup: true
+  notify: "Restart Kibana"
+
+- name: "Services"
+  service:
+    name: "{{ item }}"
+    state: "started"
+    enabled: "yes"
+  with_items:
+    - "{{ kibana_service }}"
+    - "{{ elasticsearch_service }}"
